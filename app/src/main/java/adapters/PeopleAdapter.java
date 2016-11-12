@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import com.example.ody.sickslayers.databinding.ItemPersonBinding;
 
+import functions.Consumer;
+
 /**
  * Created by Ody on 09-Nov-16.
  */
@@ -15,10 +17,10 @@ import com.example.ody.sickslayers.databinding.ItemPersonBinding;
 public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.ViewHolder> {
 
     String[] _dataset = new String[]{};
-    View.OnClickListener _listener;
+    Consumer<String> _listener;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public PeopleAdapter(String[] myDataset, View.OnClickListener clickListener ) {
+    public PeopleAdapter(String[] myDataset, Consumer<String> clickListener) {
         _dataset = myDataset;
         _listener = clickListener;
     }
@@ -27,7 +29,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.ViewHolder
     @Override
     public PeopleAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        ItemPersonBinding binding = ItemPersonBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
+        ItemPersonBinding binding = ItemPersonBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(binding.getRoot());
         return vh;
@@ -35,13 +37,18 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.ViewHolder
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.binding.txtPersonName.setText(_dataset[position]);
 
         //When this Item is Clicked Set the Listener that was injected
-        holder.binding.getRoot().setOnClickListener(_listener);
+        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _listener.Consume(_dataset[position]);
+            }
+        });
 
     }
 
